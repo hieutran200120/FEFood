@@ -5,7 +5,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Alert, FlatList, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { CartContext } from "../context/CartContext";
 import { changeStatus, getOrder } from "../services/orderService";
-import { CartContextType, NavigationProp } from '../types';
+import { BASE_URL, CartContextType, NavigationProp } from '../types';
 interface OrderItemType {
   id: string;
   shopName?: string;
@@ -284,7 +284,6 @@ const OrderCard: React.FC<OrderCardProps> = ({ item, onChangeStatus, navigation 
       handleAddToCart();
     }
   };
-
   // Hàm thêm sản phẩm vào giỏ hàng
   const handleAddToCart = () => {
     try {
@@ -296,10 +295,8 @@ const OrderCard: React.FC<OrderCardProps> = ({ item, onChangeStatus, navigation 
         image: item.orderItems.image,
         quantity: item.orderItem.quantity
       };
-
       // Thêm vào giỏ hàng
       addToCartItem(productToAdd);
-
       // Hiển thị thông báo thành công
       Alert.alert(
         "Thành công",
@@ -313,7 +310,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ item, onChangeStatus, navigation 
   };
 
   const handleOrderDetailAction = async () => {
-    navigation.navigate("OrderDetails");
+    navigation.navigate("OrderDetails", { id: item.id });
   };
 
   return (
@@ -325,7 +322,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ item, onChangeStatus, navigation 
 
       <View className="flex-row items-center mb-2">
         <Image
-          source={{ uri: `http://192.168.9.110:45455/Images/${item.orderItems.image[0]}` }}
+          source={{ uri: `${BASE_URL}/Images/${item.orderItems.image[0]}` }}
           className="w-14 h-14 rounded-md mr-3"
         />
         <View className="flex-1">

@@ -1,15 +1,15 @@
 import { useRoute } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import {
+    FlatList,
     Image,
-    ScrollView,
     Text,
     TouchableOpacity,
     View
 } from 'react-native';
 import { SwiperFlatList } from 'react-native-swiper-flatlist';
 import { COLORS, SIZES } from '../constants';
-import { CartContextType, CartItem, NavigationProp } from '../types';
+import { BASE_URL, CartContextType, CartItem, NavigationProp } from '../types';
 // Import components
 import { CartQuantityButton, Header, LineDivider, Rating, StepperInput, TextButton } from '../components';
 import images from '../constants/images';
@@ -150,7 +150,7 @@ const FoodDetail: React.FC<FoodDetailProps> = ({ navigation }) => {
                             renderItem={({ item }: any) => (
                                 <View className="h-64 flex justify-center items-center">
                                     <Image
-                                        source={{ uri: `http://192.168.9.110:45455/Images/${item}` }}
+                                        source={{ uri: `${BASE_URL}/Images/${item}` }}
                                         className="w-full h-full object-cover"
                                         style={{ width: SIZES.width }}
                                     />
@@ -286,15 +286,6 @@ const FoodDetail: React.FC<FoodDetailProps> = ({ navigation }) => {
             </View>
         );
     }
-
-    const renderStars = (star: number) => {
-        return <Text className="text-amber-500">{
-            Array.from({ length: star }, (_, i) => (
-                <Text key={i}>⭐</Text>
-            ))
-        }</Text>;
-    };
-
     const renderComment = (review: RatingItem) => (
         <View className="p-3 border-b border-gray-200">
             <View className="flex flex-row items-center gap-3">
@@ -315,7 +306,12 @@ const FoodDetail: React.FC<FoodDetailProps> = ({ navigation }) => {
                 <Text className="font-bold">{review.user.userName}</Text>
             </View>
             <View className="ml-10">
-                {renderStars(review.star)}
+                <Rating
+                    rating={review.star}
+                    iconStyle={{
+                        marginLeft: 3
+                    }}
+                />
                 <Text className="my-1">{review.comment}</Text>
                 <Text className="text-xs text-gray-500">{review.date}</Text>
             </View>
@@ -325,7 +321,7 @@ const FoodDetail: React.FC<FoodDetailProps> = ({ navigation }) => {
     return (
         <View className="flex flex-col bg-white min-h-screen">
             {renderHeader()}
-            <ScrollView
+            {/* <ScrollView
                 className="flex-1"
                 showsVerticalScrollIndicator={false}
             >
@@ -334,8 +330,6 @@ const FoodDetail: React.FC<FoodDetailProps> = ({ navigation }) => {
                 <Text className="text-xl font-bold py-3 px-5 bg-gray-100 text-gray-800">
                     Bình luận
                 </Text>
-
-                {/* Comments section */}
                 <View className="comments-container">
                     {rating.length > 0 ? (
                         rating.map(item => renderComment(item))
@@ -345,11 +339,39 @@ const FoodDetail: React.FC<FoodDetailProps> = ({ navigation }) => {
                         </View>
                     )}
                 </View>
-
                 {renderRestaurant()}
                 <LineDivider />
                 <View className="h-24" />
-            </ScrollView>
+            </ScrollView> */}
+            <FlatList
+                className="flex-1"
+                showsVerticalScrollIndicator={false}
+                ListHeaderComponent={() => (
+                    <>
+                        {renderDetail()}
+                        <LineDivider />
+                        <Text className="text-xl font-bold py-3 px-5 bg-gray-100 text-gray-800">
+                            Bình luận
+                        </Text>
+                    </>
+                )}
+                data={rating.length > 0 ? rating : [{ empty: true } as any]}
+                renderItem={({ item }: { item: any }) =>
+                    item.empty ? (
+                        <View className="p-4 items-center">
+                            <Text className="text-gray-500">Không có bình luận nào.</Text>
+                        </View>
+                    ) : renderComment(item)
+                }
+                keyExtractor={(item: any, index: number) => item.id?.toString() || index.toString()}
+                ListFooterComponent={() => (
+                    <>
+                        {renderRestaurant()}
+                        <LineDivider />
+                        <View className="h-24" />
+                    </>
+                )}
+            />
             <View className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200">
                 {renderFooter()}
             </View>

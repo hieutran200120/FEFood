@@ -1,21 +1,19 @@
-import api from './apiService';
+import api from '../services/apiService'; // Import từ file bạn đã cấu hình axios
 
-// Định nghĩa các kiểu dữ liệu
 export interface HomeFood {
-    id: string;
-    name: string;
-    description: string;
-    image: string[];
-    price: number;
-    isFavorite: number;
-    categoryName: string;
+  id: string;
+  name: string;
+  description: string;
+  image: string[];
+  price: number;
+  isFavorite: number;
+  categoryName: string;
 }
 
 export interface HomeFoodResponse {
   items: HomeFood[];
 }
 
-// Định nghĩa tham số cho request làm Record<string, unknown>
 export interface FoodParams extends Record<string, unknown> {
   categoryId?: number;
   search?: string;
@@ -23,51 +21,36 @@ export interface FoodParams extends Record<string, unknown> {
   pageSize?: number;
 }
 
-// Cập nhật hàm getFood
+// Lấy danh sách món ăn
 export const getFood = async (params?: FoodParams): Promise<HomeFoodResponse> => {
-  return api.makeAuthRequest<HomeFoodResponse>({
-    url: "/Food",
-    method: "GET",
-    params,
-  });
+  const response = await api.get<HomeFoodResponse>('api/Food', { params });
+  return response.data;
 };
 
-// Lấy thông tin chi tiết của món ăn theo ID
+// Lấy chi tiết món ăn theo ID
 export const getFoodById = async (id: number): Promise<HomeFood> => {
-  return api.makeAuthRequest<HomeFood>({
-    url: `/Food/${id}`,
-    method: "GET",
-  });
+  const response = await api.get<HomeFood>(`api/Food/${id}`);
+  return response.data;
 };
 
 // Lấy danh sách món ăn theo danh mục
 export const getFoodsByCategory = async (categoryId: number): Promise<HomeFoodResponse> => {
-  const params: FoodParams = { categoryId };
-  return getFood(params);
+  return getFood({ categoryId });
 };
 
 // Thêm món ăn mới
 export const addFood = async (food: Omit<HomeFood, 'id'>): Promise<HomeFood> => {
-  return api.makeAuthRequest<HomeFood>({
-    url: '/Food',
-    method: 'POST',
-    data: food,
-  });
+  const response = await api.post<HomeFood>('api/Food', food);
+  return response.data;
 };
 
-// Cập nhật thông tin món ăn
+// Cập nhật món ăn
 export const updateFood = async (id: number, food: Partial<HomeFood>): Promise<HomeFood> => {
-  return api.makeAuthRequest<HomeFood>({
-    url: `/Food/${id}`,
-    method: 'PUT',
-    data: food,
-  });
+  const response = await api.put<HomeFood>(`api/Food/${id}`, food);
+  return response.data;
 };
 
 // Xóa món ăn
 export const deleteFood = async (id: number): Promise<void> => {
-  return api.makeAuthRequest<void>({
-    url: `/Food/${id}`,
-    method: 'DELETE',
-  });
+  await api.delete(`api/Food/${id}`);
 };

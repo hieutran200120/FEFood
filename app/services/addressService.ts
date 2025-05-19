@@ -1,4 +1,4 @@
-import api from './apiService';
+import api from '../services/apiService'; // Import từ file bạn đã cấu hình axios
 
 // Kiểu dữ liệu khi tạo mới địa chỉ
 export interface CreateAddressPayload {
@@ -8,28 +8,21 @@ export interface CreateAddressPayload {
     ward: string;
     streetName: string;
 }
+
 export interface Address extends CreateAddressPayload {
     id: string;
 }
 
 // Lấy danh sách tất cả địa chỉ
 export const getAddress = async (): Promise<Address[]> => {
-    try {
-        const response = await api.get<{ items: Address[] }>('/Address');
-        return response.data.items;
-    } catch (error) {
-        console.error('Error fetching items:', error);
-        throw error;
-    }
+    const response = await api.get<{ items: Address[] }>('api/Address');
+    return response.data.items;
 };
 
 // Tạo mới địa chỉ
-export const createAddress = async (data: CreateAddressPayload): Promise<Address> => {
-    try {
-        const response = await api.post<Address>('/Address', data);
-        return response.data;
-    } catch (error) {
-        console.error('Error creating item:', error);
-        throw error;
-    }
+export const createAddress = async (
+    data: CreateAddressPayload
+): Promise<Address> => {
+    const response = await api.post<Address>('api/Address', data);
+    return response.data;
 };

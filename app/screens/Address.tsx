@@ -1,11 +1,10 @@
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import React, { useContext, useEffect, useState } from 'react';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { Header } from '../components';
 import { CartContext } from '../context/CartContext';
 import { getAddress } from '../services/addressService';
 import { Address, CartContextType, NavigationProp } from '../types';
-
 interface AddressProps {
     navigation: NavigationProp;
 }
@@ -67,7 +66,7 @@ const AddressScreen: React.FC<AddressProps> = ({ navigation }) => {
             containerStyle="h-15 px-4 mt-5 items-center"
             leftComponent={
                 <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <FontAwesome name="arrow-left" size={24} color="#000" />
+                    <Ionicons name="arrow-back" size={24} color="#000" />
                 </TouchableOpacity>
             }
             rightComponent={<View className="w-10" />}

@@ -7,7 +7,7 @@ import CartQuantityButton from '../components/CartQuantityButton';
 import { CartContext } from '../context/CartContext';
 import { getCategory } from '../services/categoryService';
 import { getFood } from '../services/foodService';
-import { NavigationProp } from '../types';
+import { BASE_URL, NavigationProp } from '../types';
 // Định nghĩa lại kiểu Food nếu không import được từ Card.tsx
 export interface Food {
   id: string;
@@ -37,9 +37,6 @@ interface HomeProps {
   navigation: NavigationProp;
 }
 
-// Thêm baseURL để dễ quản lý
-const BASE_URL = 'http://192.168.9.110:45455';
-
 const Home: React.FC<HomeProps> = ({ navigation }) => {
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState<number>(0);
   const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
@@ -49,10 +46,8 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
-
   // Sử dụng kiểu any tạm thời để tránh lỗi TypeScript
   const { cartItems } = useContext(CartContext)!;
-
   // Tách việc lấy dữ liệu thành 2 hàm riêng biệt
   const fetchCategories = async () => {
     try {
@@ -79,7 +74,6 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
       throw err;
     }
   };
-
   // Sử dụng useEffect để tải dữ liệu ban đầu
   useEffect(() => {
     const loadData = async () => {
@@ -88,12 +82,10 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
       try {
         await Promise.all([fetchCategories(), fetchFoods()]);
       } catch (err) {
-        // Lỗi đã được xử lý trong các hàm fetch
       } finally {
         setIsLoading(false);
       }
     };
-
     loadData();
   }, []);
 
@@ -123,7 +115,6 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
         setFilteredFoods(foods);
       } else {
         const categoryName = categories[selectedCategoryIndex].name;
-
         // Kiểm tra xem món ăn có thuộc tính categoryName không
         if (foods[0]?.categoryName !== undefined) {
           const filtered = foods.filter(food => food.categoryName === categoryName);

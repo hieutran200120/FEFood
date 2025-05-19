@@ -1,6 +1,5 @@
-import api from './apiService';
+import api from '../services/apiService';
 
-// Định nghĩa các interface
 interface OrderRequest {
     order: {
         price: number;
@@ -26,28 +25,25 @@ interface StatusData {
 }
 
 // Tạo đơn hàng mới
-export const postOrder = (data: OrderRequest) => {
-    return api.makeAuthRequest({
-        url: "/Order",
-        method: "POST",
-        data
-    });
+export const postOrder = async (data: OrderRequest) => {
+    const response = await api.post('api/Order', data);
+    return response.data;
 };
 
 // Lấy chi tiết đơn hàng
-export const getOrder = (params: OrderParams) => {
-    return api.makeAuthRequest({
-        url: "/Order/OrderDetail",
-        method: "GET",
-        params
-    });
+export const getOrder = async (params: OrderParams) => {
+    const response = await api.get('api/Order/OrderDetail', { params });
+    return response.data;
 };
 
 // Cập nhật trạng thái đơn hàng
-export const changeStatus = (orderId: string | number, statusData: StatusData) => {
-    return api.makeAuthRequest<{ success: boolean; message?: string }>({
-        url: `/Order?Id=${orderId}`,
-        method: "PUT",
-        data: statusData
-    });
+export const changeStatus = async (
+    orderId: string | number,
+    statusData: StatusData
+) => {
+    const response = await api.put<{ success: boolean; message?: string }>(
+        `api/Order?Id=${orderId}`,
+        statusData
+    );
+    return response.data;
 };

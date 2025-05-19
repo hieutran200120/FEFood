@@ -1,10 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+import api from '../services/apiService';
 
-const API_BASE_URL = 'http://192.168.9.110:45455/api';
-//const API_BASE_URL = 'http://192.168.10.161:45456/api'
-
-interface LoginResponse {
+export interface LoginResponse {
   token: string;
   id: string;
   userName: string;
@@ -13,11 +10,6 @@ interface LoginResponse {
   phoneNumber: string;
   avatar: string;
   [key: string]: any;
-}
-
-interface LoginCredentials {
-  email: string;
-  password: string;
 }
 
 interface RefreshTokenResponse {
@@ -31,28 +23,24 @@ interface ApiError {
   message?: string;
 }
 
-// Hàm đăng nhập và lưu token
 export const login = async (email: string, password: string): Promise<LoginResponse> => {
-
   try {
-    const response = await axios.post<LoginResponse>(`${API_BASE_URL}/User/login`, { email, password });
-    const { token, id: user_id, userName,
-      email: userEmail,
-      password: userPassword,
-      phoneNumber,
-      avatar, } = response.data;
+    const response = await api.post<LoginResponse>('api/User/login', { email, password });
+    const { token, id, userName, email: userEmail, password: userPassword, phoneNumber, avatar } = response.data;
 
     if (token) {
       await AsyncStorage.setItem('authToken', token);
     }
+    await AsyncStorage.setItem('user', id.toString());
     await AsyncStorage.setItem('info', JSON.stringify({
-      user_id,
+      user_id: id,
       userName,
       email: userEmail,
       password: userPassword,
       phoneNumber,
       avatar,
     }));
+
     return response.data;
   } catch (error) {
     console.error('Login error:', error);
@@ -62,28 +50,26 @@ export const login = async (email: string, password: string): Promise<LoginRespo
 
 export const register = async (formData: FormData): Promise<any> => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/User`, formData, {
+    const response = await api.post('api/User', formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        'Content-Type': 'multipart/form-data',
       },
     });
     return response.data;
   } catch (error) {
     const apiError = error as ApiError;
-    console.error("Lỗi khi đăng ký:", apiError.response?.data || apiError.message);
+    console.error('Lỗi khi đăng ký:', apiError.response?.data || apiError.message);
     throw error;
   }
 };
 
-// Hàm lấy token từ AsyncStorage
 export const getToken = async (): Promise<string | null> => {
   return await AsyncStorage.getItem('authToken');
 };
 
-// Hàm refresh token
 export const refreshToken = async (): Promise<string> => {
   try {
-    const response = await axios.post<RefreshTokenResponse>(`${API_BASE_URL}/User/refresh-token`);
+    const response = await api.post<RefreshTokenResponse>('api/User/refresh-token');
     const { token } = response.data;
 
     if (token) {
@@ -97,14 +83,11 @@ export const refreshToken = async (): Promise<string> => {
   }
 };
 
-// Hàm đăng xuất (xoá token)
 export const logout = async (): Promise<void> => {
   try {
-    await AsyncStorage.removeItem('authToken');
-    await AsyncStorage.removeItem('user');
-    await AsyncStorage.removeItem('info');
+    await AsyncStorage.multiRemove(['authToken', 'info', 'user']);
   } catch (error) {
     console.error('Logout error:', error);
     throw error;
   }
-}; 
+};

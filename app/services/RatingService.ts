@@ -1,12 +1,12 @@
-import api from './apiService';
+import api from '../services/apiService';
 
-// Type definitions
 interface RatingData {
     food_id: string;
     user_id: string;
     star: number;
     comment: string;
 }
+
 interface RatingParams {
     food_id?: string;
     user_id?: string;
@@ -33,17 +33,19 @@ interface RatingItem {
         avatar?: string;
     };
 }
-export const postRating = (data: RatingData): Promise<ApiResponse<RatingItem>> => {
-    return api.makeAuthRequest({
-        url: "/Rating",
-        method: "POST",
-        data,
-    });
+
+// Gửi đánh giá món ăn
+export const postRating = async (
+    data: RatingData
+): Promise<ApiResponse<RatingItem>> => {
+    const response = await api.post<ApiResponse<RatingItem>>('api/Rating', data);
+    return response.data;
 };
-export const getRating = (params: RatingParams): Promise<ApiResponse<RatingItem>> => {
-    return api.makeAuthRequest({
-        url: "/Rating",
-        method: "GET",
-        params
-    });
+
+// Lấy danh sách đánh giá
+export const getRating = async (
+    params: RatingParams
+): Promise<ApiResponse<RatingItem>> => {
+    const response = await api.get<ApiResponse<RatingItem>>('api/Rating', { params });
+    return response.data;
 };

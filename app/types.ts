@@ -1,5 +1,5 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
+export const BASE_URL = 'http://192.168.251.81:45455';
 export type RootStackParamList = {
   OnBoarding: undefined;
   'sign-in': undefined;
@@ -19,7 +19,7 @@ export type RootStackParamList = {
   "SettingsScreen": undefined,
   "AboutScreen": undefined,
   "AddAddress": undefined,
-  "OrderDetails": undefined
+  "OrderDetails": { id: string }
 };
 
 export type AuthStackParamList = {

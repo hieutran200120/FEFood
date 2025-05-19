@@ -52,7 +52,7 @@ const Card: React.FC<CardProps> = ({ food, navigation: navigationProp }) => {
         <View className="items-center -mt-10">
           {food.image && food.image.length > 0 ? (
             <Image
-              source={{ uri: `http://192.168.9.110:45455/Images/${food.image[0]}` }}
+              source={{ uri: `http://192.168.251.81:45456/Images/${food.image[0]}` }}
               className="w-[140px] h-[120px] rounded-lg"
               resizeMode="cover"
             />

@@ -6,7 +6,7 @@ import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'reac
 import { FooterTotal, Header } from '../components';
 import { CartContext } from '../context/CartContext';
 import { postOrder } from '../services/orderService';
-import { Address, CartContextType } from '../types';
+import { Address, BASE_URL, CartContextType } from '../types';
 
 // Định nghĩa các interface
 interface MyCardProps {
@@ -65,9 +65,10 @@ const MyCard: React.FC<MyCardProps> = ({ navigation }) => {
     }
 
     const submitOrder = async () => {
+        console.log("onclick")
         const userId = await getUserId();
+        console.log(userId)
         if (!userId || !address) return;
-
         try {
             const orderData: OrderRequest = {
                 order: {
@@ -92,7 +93,6 @@ const MyCard: React.FC<MyCardProps> = ({ navigation }) => {
             console.error('Error submitting order:', error);
         }
     };
-
     return (
         <View className="flex-1 bg-white">
             {renderHeard()}
@@ -134,7 +134,7 @@ const MyCard: React.FC<MyCardProps> = ({ navigation }) => {
                             <Text className="font-bold mt-1.5">Chuyen_si.vn</Text>
                             <View className="flex-row mt-2.5">
                                 <Image
-                                    source={{ uri: `http://192.168.9.110:45455/Images/${product.image?.[0].toString()}` }}
+                                    source={{ uri: `${BASE_URL}/Images/${product.image?.[0].toString()}` }}
                                     className="w-12 h-12 rounded"
                                 />
                                 <View className="ml-2.5 flex-1">
@@ -191,7 +191,9 @@ const MyCard: React.FC<MyCardProps> = ({ navigation }) => {
                     subTotal={Number(totalPrice) || 0}
                     shippingFee={0}
                     total={Number(totalPrice) || 0}
-                    onPress={submitOrder}
+                    onPress={() => {
+                        submitOrder();
+                    }}
                 />
             </View>
         </View>

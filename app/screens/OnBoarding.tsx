@@ -1,3 +1,4 @@
+
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
@@ -13,7 +14,6 @@ import { COLORS, FONTS, SIZES } from '../constants';
 import constants from '../constants/constants';
 import { images } from '../constants/images';
 import { NavigationProp } from '../types';
-
 interface OnBoardingItem {
     id: number;
     title: string;
@@ -31,7 +31,6 @@ const OnBoarding: React.FC<OnBoardingProps> = ({ navigation }) => {
     const flatListRef = React.useRef<FlatList<OnBoardingItem>>(null);
     const scrollX = React.useRef(new Animated.Value(0)).current;
     const [currentIndex, setCurrentIndex] = React.useState(0);
-
     const Dots: React.FC = () => {
         const dotPosition = Animated.divide(scrollX, SIZES.width);
         return (

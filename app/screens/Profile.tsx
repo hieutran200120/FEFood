@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Header } from '../components';
 import icons from '../constants/icons';
-import { NavigationProp } from '../types';
+import { BASE_URL, NavigationProp } from '../types';
 
 interface ProfileProps {
     navigation: NavigationProp;
@@ -51,7 +51,7 @@ const ProfileScreen: React.FC<ProfileProps> = ({ navigation }) => {
             {renderHeader()}
             <View className="items-center mt-4">
                 <Image
-                    source={{ uri: `http://192.168.9.110:45455/images/${user.avatar}` }}
+                    source={{ uri: `${BASE_URL}/images/${user.avatar}` }}
                     className="w-20 h-20 rounded-full bg-gray-300"
                 />
             </View>

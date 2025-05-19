@@ -1,6 +1,6 @@
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { RouteProp, useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
     Dimensions,
@@ -12,18 +12,19 @@ import {
 } from "react-native";
 import { postRating } from "../services/RatingService";
 import { NavigationProp, RootStackParamList } from '../types';
-
 const { width, height } = Dimensions.get("window");
-
-// 👇 Type cho route
+interface RatingProps {
+    navigation: NavigationProp;
+}
+// Type cho route
 type RatingScreenRouteProp = RouteProp<RootStackParamList, 'Rating'>;
 
-const Rating: React.FC = () => {
-    const [rating, setRating] = useState<number>(0);
+const Rating: React.FC<RatingProps> = ({ navigation }) => {
+    const [rating, setRating] = useState<number>(3);
     const [feedback, setFeedback] = useState<string>("");
 
     const route = useRoute<RatingScreenRouteProp>();
-    const navigation = useNavigation<NavigationProp>();
+    // const navigation = useNavigation<NavigationProp>();
 
     const { foodId } = route.params;
 
@@ -59,52 +60,69 @@ const Rating: React.FC = () => {
     };
 
     return (
-        <View className="flex-1 items-center bg-white p-5">
-            <View className="w-full h-1/3 justify-center items-center relative">
+        <View className="flex-1 bg-white">
+            {/* Background Pattern */}
+            <View className="h-1/3 w-full">
                 <ImageBackground
                     source={require("../../assets/Pattern.png")}
-                    className="absolute w-full h-full"
+                    className="w-full h-full"
                 />
             </View>
 
-            <View className="flex-1 justify-center items-center">
-                <View className="bg-orange-600 w-16 h-16 rounded-full items-center justify-center mt-16">
-                    <Ionicons name="checkmark-circle" size={40} color="white" />
+            {/* Content Container */}
+            <View className="flex-1 items-center px-5">
+                {/* Check Circle */}
+                <View className="w-16 h-16 rounded-full bg-red-500 justify-center items-center -mt-8 mb-6">
+                    <Ionicons name="checkmark" size={24} color="white" />
                 </View>
-                <Text className="text-2xl font-bold mt-5">Thank You!</Text>
-                <Text className="text-xl font-semibold mb-2">Order Completed</Text>
-                <Text className="text-sm text-gray-500 mb-5">Please rate your last Driver</Text>
 
-                <View className="flex-row mb-5">
+                {/* Text Content */}
+                <Text className="text-2xl font-bold text-black mb-2">Cảm ơn!</Text>
+                <Text className="text-lg font-semibold text-black mb-4">Đặt hàng thành công</Text>
+                <Text className="text-sm text-gray-500 mb-6">Làm ơn đánh giá sản phẩm</Text>
+
+                {/* Stars */}
+                <View className="flex-row mb-10">
                     {[1, 2, 3, 4, 5].map((index) => (
-                        <TouchableOpacity key={index} onPress={() => handleRating(index)}>
+                        <TouchableOpacity key={index} onPress={() => handleRating(index)} className="mx-2">
                             <FontAwesome
                                 name="star"
                                 size={30}
-                                color={index <= rating ? "#FFA500" : "#E0E0E0"}
+                                color={index <= rating ? "#FFC107" : "#F8F8F8"}
                             />
                         </TouchableOpacity>
                     ))}
                 </View>
+
+                {/* Feedback Input */}
+                <View className="w-full flex-row items-center border-b border-gray-200 pb-3 mb-10">
+                    <FontAwesome name="pencil" size={18} color="#FF4B3A" className="mr-3" />
+                    <TextInput
+                        className="flex-1 text-base text-black"
+                        placeholder="Leave feedback"
+                        value={feedback}
+                        onChangeText={setFeedback}
+                        placeholderTextColor="#BDBDBD"
+                    />
+                </View>
             </View>
 
-            <TextInput
-                style={{ width: "90%" }}
-                className="h-12 border border-gray-300 rounded-lg px-4 mb-10"
-                placeholder="Leave feedback"
-                value={feedback}
-                onChangeText={setFeedback}
-            />
-
-            <View className="flex-row justify-between w-full px-5">
+            {/* Buttons */}
+            <View className="flex-row w-full px-5 pb-10">
                 <TouchableOpacity
-                    className="bg-orange-600 rounded px-5 py-3"
+                    className="flex-3 bg-red-500 py-4 rounded-xl items-center justify-center mr-4"
+                    style={{ flex: 3 }}
                     onPress={submitRating}
                 >
-                    <Text className="text-white text-sm">Submit</Text>
+                    <Text className="text-white font-semibold text-base">Gửi</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('home')}>
-                    <Text className="text-orange-600 text-sm ml-5">Skip</Text>
+
+                <TouchableOpacity
+                    className="flex-1 items-center justify-center"
+                    style={{ flex: 1 }}
+                    onPress={() => navigation.navigate("tabs")}
+                >
+                    <Text className="text-red-500 font-medium text-base">Bỏ qua</Text>
                 </TouchableOpacity>
             </View>
         </View>

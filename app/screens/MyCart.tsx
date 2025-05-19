@@ -6,7 +6,7 @@ import { CartQuantityButton, FooterTotal, Header, IconButton, StepperInput } fro
 import { COLORS } from "../constants";
 import icons from "../constants/icons";
 import { CartContext } from '../context/CartContext';
-import { CartContextType, CartItem, NavigationProp } from '../types';
+import { BASE_URL, CartContextType, CartItem, NavigationProp } from '../types';
 interface MyCartProps {
   navigation: NavigationProp;
 }
@@ -23,12 +23,17 @@ const MyCart: React.FC<MyCartProps> = ({ navigation }) => {
         title="Giỏ hàng"
         containerStyle="h-15 px-4 mt-5 items-center"
         leftComponent={
-          <TouchableOpacity
-            className="p-2"
-            onPress={() => navigation.goBack()}
-          >
-            <Ionicons name="arrow-back" size={24} color="#000" />
-          </TouchableOpacity>
+          <View className="flex justify-center items-center">
+            <TouchableOpacity
+              className="w-10 h-10 rounded-md border border-gray-200 flex items-center justify-center"
+              onPress={() => navigation.goBack()}
+            >
+              <Image
+                source={icons.back}
+                className="w-5 h-5"
+              />
+            </TouchableOpacity>
+          </View>
         }
         rightComponent={
           <CartQuantityButton
@@ -57,7 +62,7 @@ const MyCart: React.FC<MyCartProps> = ({ navigation }) => {
             {/* Food Image */}
             <View className="w-20 h-[90px] -ml-2.5 relative">
               <Image
-                source={{ uri: `http://192.168.9.110:45455/Images/${item.image?.[0].toString()}` }}
+                source={{ uri: `${BASE_URL}/Images/${item.image?.[0].toString()}` }}
                 resizeMode="contain"
                 className="w-full h-full absolute top-0"
               />
